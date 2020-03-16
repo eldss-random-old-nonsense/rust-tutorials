@@ -21,3 +21,19 @@ pub fn create_task<'a>(connection: &SqliteConnection, title: &'a str) {
         // Other databases may allow other return values as well (like id)
         .expect("Error inserting new task");
 }
+
+/// Gets a vector of all Tasks back from the database.
+pub fn query_task(connection: &SqliteConnection) -> Vec<models::Task> {
+    schema::task::table
+        .load::<models::Task>(connection)
+        .expect("Error loading tasks")
+}
+
+/// Updates a task so that it is marked as done
+pub fn update_task_done(connection: &SqliteConnection, task_id: i32) {
+    use schema::task::dsl::{done, task};
+    diesel::update(task.find(task_id))
+        .set(done.eq(true))
+        .execute(connection)
+        .expect(&format!("Error updating task {}", task_id));
+}
