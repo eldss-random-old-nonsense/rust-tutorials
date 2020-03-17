@@ -1,6 +1,9 @@
 //! A command line tool to interact with the todo database.
+//!
+//! The purpose of this tool is to have a layer of abstraction away
+//! from direct database queries.
 
-use mytodo::db::{create_task, establish_connection, query_task, update_task_done};
+use mytodo::db::*;
 use std::env;
 
 fn help() {
@@ -8,6 +11,7 @@ fn help() {
     println!("    new <title>: create a new task");
     println!("    show: show tasks");
     println!("    done <task_id>: mark a task as done");
+    println!("    remove <task_id>: remove a task");
 }
 
 fn main() {
@@ -23,6 +27,7 @@ fn main() {
         "new" => new_task(&args[2..]),
         "show" => show_tasks(&args[2..]),
         "done" => record_task_done(&args[2..]),
+        "remove" => remove_task(&args[2..]),
         _ => help(),
     }
 }
@@ -55,6 +60,7 @@ fn show_tasks(args: &[String]) {
     }
 }
 
+/// Sets the status of a task to 'done'.
 fn record_task_done(args: &[String]) {
     if args.len() < 1 {
         println!("done: missing <task_id>");
@@ -71,6 +77,29 @@ fn record_task_done(args: &[String]) {
             return;
         }
     };
+
     update_task_done(&conn, id);
     println!("Update successful");
+}
+
+/// Removes a task.
+fn remove_task(args: &[String]) {
+    if args.len() < 1 {
+        println!("remove: missing <task_id>");
+        help();
+        return;
+    }
+
+    let conn = establish_connection();
+    let id: i32 = match args[0].parse() {
+        Ok(int) => int,
+        Err(e) => {
+            println!("Error parsing task id: {}", e);
+            help();
+            return;
+        }
+    };
+
+    delete_task(&conn, id);
+    println!("Remove successful");
 }

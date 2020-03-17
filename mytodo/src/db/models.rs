@@ -1,3 +1,9 @@
+//! Contains data structures that model the tables within
+//! the database. Note that structs with the Insertable trait
+//! will likely not contain all fields because we want the
+//! database to create some of the fields automatically (such
+//! as the id).
+
 use super::schema::task;
 
 #[derive(Insertable)]

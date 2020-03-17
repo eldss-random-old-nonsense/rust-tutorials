@@ -31,9 +31,17 @@ pub fn query_task(connection: &SqliteConnection) -> Vec<models::Task> {
 
 /// Updates a task so that it is marked as done
 pub fn update_task_done(connection: &SqliteConnection, task_id: i32) {
-    use schema::task::dsl::{done, task};
+    use schema::task::dsl::*;
     diesel::update(task.find(task_id))
         .set(done.eq(true))
         .execute(connection)
         .expect(&format!("Error updating task {}", task_id));
+}
+
+/// Deletes a task
+pub fn delete_task(connection: &SqliteConnection, task_id: i32) {
+    use schema::task::dsl::*;
+    diesel::delete(task.find(task_id))
+        .execute(connection)
+        .expect(&format!("Error deleting task {}", task_id));
 }
