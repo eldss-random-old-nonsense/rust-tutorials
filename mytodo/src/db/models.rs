@@ -12,7 +12,7 @@ pub struct NewTask<'a> {
     pub title: &'a str,
 }
 
-#[derive(Queryable, Identifiable)]
+#[derive(Queryable, Identifiable, Serialize)]
 #[table_name = "task"]
 pub struct Task {
     pub id: i32,

@@ -1,0 +1,2 @@
+[global.databases]
+taskdb = { url = "./testdb.sqlite3" }
