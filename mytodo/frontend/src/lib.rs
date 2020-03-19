@@ -36,14 +36,14 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     }
 }
 
-fn view(model: &Model) -> impl View<Msg> {
+fn view(model: &Model) -> Vec<Node<Msg>> {
     let tasks: Vec<Node<Msg>> = model
         .tasks
         .iter()
         .map(|t| li![{ t.title.clone() }])
         .collect();
 
-    h1![{ "Tasks" }, ul![tasks]]
+    vec![h1![{ "Tasks" }], ul![tasks]]
 }
 
 fn after_mount(_: Url, orders: &mut impl Orders<Msg>) -> AfterMount<Model> {

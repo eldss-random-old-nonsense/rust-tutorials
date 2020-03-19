@@ -4,12 +4,11 @@
 extern crate rocket;
 #[macro_use]
 extern crate rocket_contrib;
-// #[macro_use]
-// extern crate serde;
+
+use rocket_contrib::{databases::diesel, json::Json};
+use rocket_cors::{AllowedHeaders, AllowedOrigins, Error};
 
 use backend::db;
-use rocket_contrib::{databases::diesel, json::Json};
-
 use mytodo::{JsonApiResponse, Task};
 
 /// Creates a connection pool usable by handlers.
@@ -32,9 +31,22 @@ fn tasks_get(conn: TaskDbConn) -> Json<JsonApiResponse> {
     Json(response)
 }
 
-fn main() {
+fn main() -> Result<(), Error> {
+    let allowed_origins = AllowedOrigins::all();
+
+    let cors = rocket_cors::CorsOptions {
+        allowed_origins,
+        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept"]),
+        allow_credentials: true,
+        ..Default::default()
+    }
+    .to_cors()?;
+
     rocket::ignite()
         .attach(TaskDbConn::fairing())
+        .attach(cors)
         .mount("/", routes![tasks_get])
         .launch();
+
+    Ok(())
 }
