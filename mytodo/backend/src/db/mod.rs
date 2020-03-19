@@ -25,7 +25,7 @@ pub fn create_task<'a>(connection: &SqliteConnection, title: &'a str) {
 /// Gets a vector of all Tasks back from the database.
 pub fn query_task(connection: &SqliteConnection) -> Vec<models::Task> {
     schema::task::table
-        .load::<models::Task>(connection)
+        .load(connection)
         .expect("Error loading tasks")
 }
 

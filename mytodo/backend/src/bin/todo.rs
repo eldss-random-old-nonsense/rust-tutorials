@@ -3,7 +3,7 @@
 //! The purpose of this tool is to have a layer of abstraction away
 //! from direct database queries.
 
-use mytodo::db::*;
+use backend::db::*;
 use std::env;
 
 fn help() {

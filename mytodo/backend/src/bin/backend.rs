@@ -4,17 +4,13 @@
 extern crate rocket;
 #[macro_use]
 extern crate rocket_contrib;
-#[macro_use]
-extern crate serde;
+// #[macro_use]
+// extern crate serde;
 
-use mytodo::db::{self, models::Task};
+use backend::db;
 use rocket_contrib::{databases::diesel, json::Json};
 
-/// A wrapper for responses.
-#[derive(Serialize)]
-struct JsonApiResponse {
-    data: Vec<Task>,
-}
+use mytodo::{JsonApiResponse, Task};
 
 /// Creates a connection pool usable by handlers.
 #[database("taskdb")]
@@ -25,8 +21,12 @@ struct TaskDbConn(diesel::SqliteConnection);
 fn tasks_get(conn: TaskDbConn) -> Json<JsonApiResponse> {
     let mut response = JsonApiResponse { data: vec![] };
 
-    for task in db::query_task(&*conn) {
-        response.data.push(task);
+    for db_task in db::query_task(&*conn) {
+        let api_task = Task {
+            id: db_task.id,
+            title: db_task.title,
+        };
+        response.data.push(api_task);
     }
 
     Json(response)
