@@ -9,7 +9,7 @@ async fn read_file(path: &str) -> io::Result<String> {
 
 fn main() {
     let reader_task = task::spawn(async {
-        let result = read_file("../data.csv").await;
+        let result = read_file("data.csv").await;
         match result {
             Ok(s) => println!("{}", s),
             Err(e) => println!("Error reading file: {:?}", e),
